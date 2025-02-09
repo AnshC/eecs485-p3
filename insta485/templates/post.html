@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>insta485</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fafafa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: black;
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dbdbdb;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .header-separator {
+            margin: 0 10px;
+            color: #999;
+            font-size: 22px;
+        }
+
+        .header-left a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .header-right {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .header-right a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .profile-section {
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            position: relative;
+        }
+
+        .post-header img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .post-header h3 {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .post-time {
+            position: absolute;
+            right: 10px;
+            font-size: 12px;
+            color: gray;
+        }
+
+        .post-image {
+            width: 100%;
+            height: auto;
+            border-top: 1px solid #dbdbdb;
+            border-bottom: 1px solid #dbdbdb;
+        }
+
+        .dis {
+            margin: 10px;
+            font-size: 14px;
+        }
+
+        .comment-section {
+            padding: 10px;
+        }
+
+        .comment {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .comment h3 {
+            margin: 0;
+            font-size: 14px;
+            padding-right: 5px; /* Space between username and comment */
+        }
+
+        .usernames {
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <a href="/">Home</a><span class="header-separator">|</span>
+            <a href="/">Insta485</a>
+        </div>
+        <div class="header-right">
+            <a href="/explore/">explore</a> | <a href="/users/{{ current_user }}/">{{ current_user }}</a>
+        </div>
+    </div>
+    <div class="profile-section">
+        <div class="post-header">
+            <a href="/users/{{post.owner}}/">
+                <img src="/uploads/{{post.profile_img}}" alt="profile picture">
+            </a>
+            <h3><a href="/users/{{post.owner}}/" class="usernames">{{post.owner}}</a></h3>
+            <a href="/posts/{{post.postid}}/" class="post-time">{{post.created}}</a>
+        </div>
+
+        <img src="/uploads/{{post.filename}}" alt="post image" class="post-image">
+
+        <p class="dis">{{ post.like_count }} like{{ '' if likes == 1 else 's' }}</p>
+
+        <div class="actions">
+            {% if like_action == "like" %}
+            <form action="/likes/?target=/" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operation" value="like"/>
+                <input type="hidden" name="postid" value="{{ post.postid }}"/>
+                <input type="submit" name="like" value="like"/>
+              </form>
+            {% else %}
+              <form action="/likes/?target=/" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operation" value="unlike"/>
+                <input type="hidden" name="postid" value="{{ post.postid }}"/>
+                <input type="submit" name="unlike" value="unlike"/>
+              </form>
+              {% endif %}
+        </div>
+
+        <div class="comment-section">
+            {% for c in post.comments %}
+            <div class="comment">
+                <h3><a href="/users/{{ c.owner }}/" class="usernames">{{c.owner}}</a></h3>
+                <span>{{c.text}}</span>
+                {% if current_user == c.owner %}
+                <form action="/comments/?target=/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="operation" value="delete"/>
+                    <input type="hidden" name="commentid" value="{{ c.commentid }}"/>
+                    <input type="submit" name="uncomment" value="delete"/>
+                  </form>
+                  {% endif %}
+            </div>
+            {% endfor %}
+            <div class="action">
+                <form action="/comments/?target=/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="operation" value="create"/>
+                    <input type="hidden" name="postid" value="{{ post.postid }}"/>
+                    <input type="text" name="text" required/>
+                    <input type="submit" name="comment" value="comment"/>
+                  </form>
+                  {% if current_user == post.owner %}
+                  <form action="/posts/?target=/users/{{ current_user }}/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="operation" value="delete"/>
+                    <input type="hidden" name="postid" value="{{ post.postid }}"/>
+                    <input type="submit" name="delete" value="delete this post"/>
+                  </form>
+                  {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

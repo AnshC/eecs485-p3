@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insta 485</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fafafa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dbdbdb;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .header-separator {
+            margin: 0 10px;
+            color: #999;
+            font-size: 22px;
+        }
+
+        .header-left a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .header-right {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .header-right a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .signup-container {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0077cc;
+        }
+
+        .login-link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #0095f6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <a href="/" class="blacklink">Home</a>
+            <span class="header-separator"> |</span>
+            <span class="header-title"> Insta<b>485</b></span>
+        </div>
+        <div class="header-right">
+            <span class="header-separator"> |</span>
+            <a href="/accounts/login/">Login</a> <!-- First Login Link -->
+        </div>
+    </div>
+
+    <div class="signup-container">
+        <h1>Create Account</h1>
+        <form action="/accounts/?target=/" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required />
+            <input type="text" name="fullname" placeholder="Full Name" required/>
+            <input type="text" name="username" placeholder="Username" required/>
+            <input type="text" name="email" placeholder="Email" required/>
+            <input type="password" name="password" placeholder="Password" required/>
+            <input type="submit" name="signup" value="Sign Up"/>
+            <input type="hidden" name="operation" value="create"/>
+        </form>
+        <p class="login-link">Already have an account? <a href="/accounts/login/">Login here</a></p>
+    </div>
+</body>
+</html>

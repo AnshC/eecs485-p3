@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DB_PATH="var/insta485.sqlite3"
+
+# Check if the database file exists
+if [[ ! -f "$DB_PATH" ]]; then
+    echo "Error: can't find database $DB_PATH"
+    echo "Try: ./bin/insta485db create"
+    exit 1
+fi
+
+# Run the development server (Replace with actual command if needed)
+exec flask --app insta485 --debug run --host 0.0.0.0 --port 8000

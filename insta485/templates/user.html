@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>insta485</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fafafa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: black;
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dbdbdb;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .header-separator {
+            margin: 0 10px;
+            color: #999;
+            font-size: 22px;
+        }
+
+        .header-left a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .header-right {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .header-right a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .content {
+            width: 100%;
+            max-width: 900px;
+            background-color: white;
+            padding: 20px;
+        }
+
+        .username {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .stats b {
+            font-weight: bold;
+        }
+
+        .fullname {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .posts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: flex-start;
+        }
+
+        .posts img {
+            width: 45%;
+            max-width: 400px;
+            height: auto;
+        }
+
+        .blacklink {
+            color: black;
+            text-decoration: none; /* Removes underline */
+            font-weight: normal; /* Ensures consistent styling */
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <a href="/">Home</a><span class="header-separator">|</span>
+            <a href="/">Insta485</a>
+        </div>
+        <div class="header-right">
+            <a href="/explore/">explore</a> | <a href="/users/{{ current_user }}/">{{ current_user }}</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <p class="username">{{ user.username }}</p>
+        <p class="relationship">{{ relationship }}</p>
+        <p class="stats">{{ total_post_count }} posts 
+            <a href="/users/{{user.username}}/followers/" class = "blacklink"><b>{{ follower_count }}</b> followers</a> 
+            <a href="/users/{{user.username}}/following/" class="blacklink"><b>{{ following_count }}</b> following</a>
+        </p>
+        <p class="fullname">{{  user.fullname }}</p>
+        {% if relationship == "following" %}
+        <form action="/following/?target=/" method="post" enctype="multipart/form-data">
+            <input type="submit" name="unfollow" value="unfollow"/>
+            <input type="hidden" name="username" value="{{ user.username }}"/>
+            <input type="hidden" name="operation" value="unfollow"/>
+          </form>
+        {% if relationship == "not following" %}
+        <form action="/following/?target=/" method="post" enctype="multipart/form-data">
+            <input type="submit" name="follow" value="follow"/>
+            <input type="hidden" name="username" value="{{ user.username }}" />
+            <input type="hidden" name="operation" value="follow"/>
+          </form>
+        {% endif %}  
+        {% else %}
+        <form action="/posts/?target=/users/{{ current_user }}/" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required/>
+            <input type="submit" name="create_post" value="upload new post"/>
+            <input type="hidden" name="operation" value="create"/>
+          </form>
+        <form action="/accounts/?target=/accounts/login/" method="post" enctype="multipart/form-data">
+            <input type="submit" name="logout" value="Logout"/>
+            <input type="hidden" name="operation" value="logout"/>
+        </form>
+        <a href="/accounts/edit/">Edit profile</a>
+        {% endif %}
+        <div class="posts">
+            {% if post_count == 0 %}
+            <h3>No posts yet.</h3>
+            {% else %}
+                {% for p in posts %}
+                <a href="/posts/{{ p.postid }}/">
+                    <img src="/uploads/{{p.filename}}" alt="post">
+                </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>

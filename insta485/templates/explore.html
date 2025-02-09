@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>insta485</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fafafa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dbdbdb;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .header-separator {
+            margin: 0 10px;
+            color: #999;
+            font-size: 22px;
+        }
+
+        .header-left a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .header-right {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .header-right a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .discover-header {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .section {
+            width: 100%;
+            max-width: 350px;
+            border: 1px solid #dbdbdb;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .info {
+            display: flex;
+            align-items: center;
+        }
+
+        .info .user_photo {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .info .user_name {
+            font-weight: bold;
+            text-decoration: none;
+            color: black;
+            font-size: 16px;
+        }
+
+        .following {
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .following:hover {
+            background-color: #0077cc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <a href="/" class="blacklink">Home</a>
+            <span class="header-separator"> |</span>
+            <span class="header-title"> Insta<b>485</b></span>
+        </div>
+        <div class="header-right">
+            <a href="/explore/">Explore</a>
+            <span class="header-separator"> |</span>
+            <a href="/users/{{logname}}/">{{logname}}</a>
+        </div>
+    </div>
+
+    <div class="discover-header">Discover People</div>
+
+    <div>
+        {% for not_follow in not_following %}
+        <div class="section">
+            <div class="info">
+                <img src="/uploads/{{not_follow.user_img_url}}" alt="user_photo" class="user_photo">
+                <a href="/users/{{not_follow.username}}/" class="user_name">{{not_follow.username}}</a>
+            </div>
+            <form action="/following/?target={{curr_path}}/" method="post">
+                <input class="following" type="submit" name="follow" value="Follow" />
+                <input type="hidden" name="username" value="{{not_follow.username}}" />
+                <input type="hidden" name="operation" value="follow" />
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

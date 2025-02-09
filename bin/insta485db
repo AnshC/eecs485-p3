@@ -1,0 +1,68 @@
+#!/bin/bash
+# insta485db
+
+# Stop on errors
+set -Eeuo pipefail
+
+# Sanity check command line options
+usage() {
+  echo "Usage: $0 (create|destroy|reset|dump)"
+}
+
+if [ $# -ne 1 ]; then
+  usage
+  exit 1
+fi
+
+DB_FILE="var/insta485.sqlite3"
+UPLOADS_DIR="var/uploads"
+
+case $1 in
+  "create")
+    if [ -f "$DB_FILE" ]; then
+      echo "Error: database already exists"
+      exit 1
+    fi
+    echo "Creating database..."
+    mkdir -p "$UPLOADS_DIR"
+    sqlite3 "$DB_FILE" < sql/schema.sql
+    sqlite3 "$DB_FILE" < sql/data.sql
+    cp sql/uploads/* "$UPLOADS_DIR/"
+    echo "Database created successfully."
+    ;;
+
+  "destroy")
+    echo "Destroying database..."
+    rm -rf "$DB_FILE" "$UPLOADS_DIR"
+    echo "Database destroyed."
+    ;;
+
+  "reset")
+    echo "Resetting database..."
+    rm -rf "$DB_FILE" "$UPLOADS_DIR"
+    mkdir -p "$UPLOADS_DIR"
+    sqlite3 "$DB_FILE" < sql/schema.sql
+    sqlite3 "$DB_FILE" < sql/data.sql
+    cp sql/uploads/* "$UPLOADS_DIR/"
+    echo "Database reset complete."
+    ;;
+
+  "dump")
+    if [ ! -f "$DB_FILE" ]; then
+      echo "Error: database does not exist"
+      exit 1
+    fi
+    echo "Dumping database contents..."
+    sqlite3 -batch -line "$DB_FILE" "SELECT * FROM comments;"
+    sqlite3 -batch -line "$DB_FILE" "SELECT * FROM following;"
+    sqlite3 -batch -line "$DB_FILE" "SELECT * FROM likes;"
+    sqlite3 -batch -line "$DB_FILE" "SELECT * FROM posts;"
+    sqlite3 -batch -line "$DB_FILE" "SELECT * FROM users;"
+    echo "Database dump complete."
+    ;;
+
+  *)
+    usage
+    exit 1
+    ;;
+esac

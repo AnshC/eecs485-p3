@@ -10,4 +10,7 @@ if [[ ! -f "$DB_PATH" ]]; then
 fi
 
 # Run the development server (Replace with actual command if needed)
+npx webpack --watch &
 exec flask --app insta485 --debug run --host 0.0.0.0 --port 8000
+
+

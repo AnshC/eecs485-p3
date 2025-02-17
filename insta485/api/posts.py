@@ -284,7 +284,6 @@ def get_number_of_likes(postid, db):
     likes = db.execute(
       "SELECT COUNT(*) AS count FROM likes WHERE postid = ?", (postid,)
     ).fetchall()
-
     return likes[0]['count']
 
 

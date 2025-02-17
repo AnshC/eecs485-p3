@@ -4,7 +4,18 @@
   </head>
 <body>
   <!-- Plain old HTML and jinja2 nav bar goes here -->
-
+  <div class="header">
+    <div class="header-left">
+        <a href="/" class="blacklink">Home</a>
+        <span class="header-separator"> |</span>
+        <span class="header-title"> Insta<b>485</b></span>
+    </div>
+    <div class="header-right">
+        <a href="/explore/">Explore</a>
+        <span class="header-separator"> |</span>
+        <a href="/users/{{logname}}/">{{logname}}</a>
+    </div>
+  </div>
 
   <div id="reactEntry">
     Loading ...

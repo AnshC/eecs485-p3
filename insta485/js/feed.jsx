@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Post from "./post";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Post from "./post";
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
   const [nextURL, setNext] = useState();
+  const [postLength, setPostsLength] = useState(0);
 
   // Initial Fetch
   useEffect(() => {
@@ -14,24 +15,27 @@ export default function Feed() {
         return response.json();
       })
       .then((data) => {
-        setPosts([...posts, ...data.results]);
+        setPosts(data.results);
         setNext(data.next);
+        setPostsLength(data.results.length);
       });
   }, []);
 
   // Next Fetch
-  function getNextPosts() {
+  const getNextPosts = React.useCallback(() => {
     if (nextURL) {
       fetch(nextURL)
         .then((response) => {
+          if (!response.ok) throw Error(response.statusText);
           return response.json();
         })
         .then((data) => {
           setPosts([...posts, ...data.results]);
           setNext(data.next);
+          setPostsLength(posts.length);
         });
     }
-  }
+  }, [nextURL, posts]);
 
   return (
     <div className="feed">
@@ -40,7 +44,7 @@ export default function Feed() {
       </div>
       <div className="posts">
         <InfiniteScroll
-          dataLength={posts.length}
+          dataLength={postLength}
           next={getNextPosts}
           hasMore={!!nextURL}
           loader={<h4>Loading...</h4>}
@@ -50,9 +54,9 @@ export default function Feed() {
             </p>
           }
         >
-          {posts.map((post) => {
-            return <Post url={post.url} key={post.postid} />;
-          })}
+          {posts.map((post) => (
+            <Post url={post.url} key={post.postid} />
+          ))}
         </InfiniteScroll>
       </div>
     </div>

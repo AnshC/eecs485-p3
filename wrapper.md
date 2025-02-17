@@ -9,8 +9,8 @@ Q2b: How did your team pass data between React components?
 
 ### Answer at least one of the two questions above {: #Q2}
 
-Q2b: I handled passing data in between react components using props and the react state functionality.
+I handled passing data in between react components using props and the react state functionality. I passed props into individual Post components, and used state functionality to dynamically update data across a component.
 
 ### Q3: How did your team approach the division of work for this project? How did that experience go? {: #Q3}
 
-I worked alone for this project, and effectively divided this project into 2 major chunks (rest api and client side)
+I worked alone for this project, and effectively divided this project into 2 major chunks (rest api and client side). I worked on the REST API early, and started the client side later on (towards the end of the project).

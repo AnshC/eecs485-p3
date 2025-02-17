@@ -43,7 +43,7 @@ export default function Post({ url }) {
           setNumLikes(data.likes.numLikes);
           setPostId(data.postid);
           setLognameLikesThis(data.likes.lognameLikesThis);
-          setComments([...comments, ...data.comments]);
+          setComments(data.comments);
           setCreated(dayjs.utc(data.created).local().fromNow());
           setPostShowUrl(data.postShowUrl);
           setUnlikeURL(data.likes.url);
@@ -84,12 +84,12 @@ export default function Post({ url }) {
     e.preventDefault();
     if (!lognameLikesThis) {
       fetch(`/api/v1/likes/?postid=${postId}`, { method: "POST" })
-      .then((response) => response.json())
-      .then((data) => {
-        setUnlikeURL(`/api/v1/likes/${data.likeid}/`);
-        setNumLikes(numLikes + 1);
-        setLognameLikesThis(true);
-      })
+        .then((response) => response.json())
+        .then((data) => {
+          setUnlikeURL(`/api/v1/likes/${data.likeid}/`);
+          setNumLikes(numLikes + 1);
+          setLognameLikesThis(true);
+        });
     }
   }
 
@@ -104,11 +104,9 @@ export default function Post({ url }) {
         text: comment,
       }),
     })
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        setComments((comments) => [...comments, data]);
+        setComments((c) => [...c, data]);
       })
       .catch((error) => {
         console.error("Error posting comment:", error);
@@ -118,8 +116,8 @@ export default function Post({ url }) {
   function deleteComment(e, commentid) {
     e.preventDefault();
     fetch(`/api/v1/comments/${commentid}/`, { method: "DELETE" }).then(() => {
-      setComments((comments) =>
-        comments.filter((comment) => comment.commentid !== commentid),
+      setComments((c) =>
+        c.filter((com) => com.commentid !== commentid),
       );
     });
   }
@@ -127,8 +125,12 @@ export default function Post({ url }) {
   // Render post image and post owner
   return (
     <div className="post">
-      <div className="owner" style={{ display: 'flex' }}>
-        <img src={ownerImgUrl} alt="owner_image" style={{ width: '50px', height: '50px' }} />
+      <div className="owner" style={{ display: "flex" }}>
+        <img
+          src={ownerImgUrl}
+          alt="owner_image"
+          style={{ width: "50px", height: "50px" }}
+        />
         <p>
           {owner} <a href={postShowUrl}>{created}</a>
         </p>
@@ -141,31 +143,32 @@ export default function Post({ url }) {
         }}
       />
       <p>
-        {numLikes} {numLikes == 1 ? "like" : "likes"}
+        {numLikes} {numLikes === 1 ? "like" : "likes"}
       </p>
-      {dataFetched ? 
+      {dataFetched ? (
         <>
           {lognameLikesThis ? (
-          <button
-            data-testid="like-unlike-button"
-            onClick={(e) => {
-              unlike(e);
-            }}
-          >
-            Unlike
-          </button>
-        ) : (
-          <button
-            data-testid="like-unlike-button"
-            onClick={(e) => {
-              like(e);
-            }}
-          >
-            Like
-          </button>
-        )}
-        {comments.map((c) => {
-          return (
+            <button
+              type="button"
+              data-testid="like-unlike-button"
+              onClick={(e) => {
+                unlike(e);
+              }}
+            >
+              Unlike
+            </button>
+          ) : (
+            <button
+              type="button"
+              data-testid="like-unlike-button"
+              onClick={(e) => {
+                like(e);
+              }}
+            >
+              Like
+            </button>
+          )}
+          {comments.map((c) => (
             <div
               data-testid="comment-text"
               style={{ display: "flex", alignItems: "center" }}
@@ -181,6 +184,7 @@ export default function Post({ url }) {
               <p style={{ marginRight: "10px" }}>{c.text}</p>
               {c.lognameOwnsThis ? (
                 <button
+                  type="button"
                   data-testid="delete-comment-button"
                   onClick={(e) => {
                     deleteComment(e, c.commentid);
@@ -189,27 +193,28 @@ export default function Post({ url }) {
                   Delete
                 </button>
               ) : (
-                <></>
+                <div />
               )}
             </div>
-          );
-        })}
-        <form
-        data-testid="comment-form"
-        onSubmit={(e) => {
-          postComment(e);
-        }}
-      >
-        <input
-          type="text"
-          onChange={(e) => {
-            setComment(e.target.value);
-          }}
-        />
-      </form>
-        </> : <></>
-      }
-      
+          ))}
+
+          <form
+            data-testid="comment-form"
+            onSubmit={(e) => {
+              postComment(e);
+            }}
+          >
+            <input
+              type="text"
+              onChange={(e) => {
+                setComment(e.target.value);
+              }}
+            />
+          </form>
+        </>
+      ) : (
+        <div />
+      )}
     </div>
   );
 }

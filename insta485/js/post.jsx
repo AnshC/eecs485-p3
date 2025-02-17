@@ -116,9 +116,7 @@ export default function Post({ url }) {
   function deleteComment(e, commentid) {
     e.preventDefault();
     fetch(`/api/v1/comments/${commentid}/`, { method: "DELETE" }).then(() => {
-      setComments((c) =>
-        c.filter((com) => com.commentid !== commentid),
-      );
+      setComments((c) => c.filter((com) => com.commentid !== commentid));
     });
   }
 
